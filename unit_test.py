@@ -184,7 +184,7 @@ def request(path, method="GET", data=None, json_response=False):
                 res_data = json.loads(res_data)
             return (res.getcode(), res_data)
     except urllib.error.HTTPError as e:
-        return (e.getcode(), None)
+        return (e.getcode(), e.fp.read())
 
 
 def deep_sort_children(node):
@@ -211,8 +211,8 @@ def print_diff(expected, response):
 def test_import():
     for index, batch in enumerate(IMPORT_BATCHES):
         print(f"Importing batch {index}")
-        status, _ = request("/imports", method="POST", data=batch)
-
+        status, response = request("/imports", method="POST", data=batch)
+        print(response)
         assert status == 200, f"Expected HTTP status code 200, got {status}"
 
     print("Test import passed.")

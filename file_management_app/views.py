@@ -1,5 +1,5 @@
-from .serializers import ItemSerializer
-from .models import Item
+from .serializers import ItemSerializer, ImportSerializer
+from .models import Item, Import
 from rest_framework import generics
 
 
@@ -8,9 +8,9 @@ class DeleteView(generics.DestroyAPIView):
     serializer_class = ItemSerializer
 
 
-class ImportsView(generics.UpdateAPIView):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
+class ImportsView(generics.CreateAPIView):
+    queryset = Import.objects.all()
+    serializer_class = ImportSerializer
 
 
 class NodesView(generics.RetrieveAPIView):
