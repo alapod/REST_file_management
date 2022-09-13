@@ -1,4 +1,4 @@
-from file_management_app.serializers import ItemSerializer, ImportSerializer
+from file_management_app.serializers import ItemBatchSerializer
 
 # Create your tests here.
 from django.test import TestCase
@@ -7,9 +7,7 @@ from django.test import TestCase
 
 class TestFoo(TestCase):
     def test_serializer(self):
-        serializer = ImportSerializer()
-        serializer.create(
-            {
+        serializer = ItemBatchSerializer(data={
                 "items": [
                     {
                         "type": "FOLDER",
@@ -18,5 +16,7 @@ class TestFoo(TestCase):
                     }
                 ],
                 "updateDate": "2022-02-01T12:00:00Z",
-            }
-        )
+            })
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
