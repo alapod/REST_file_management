@@ -29,7 +29,6 @@ IMPORT_BATCHES = [
     },
     {
         "items": [
-
             {
                 "type": "FILE",
                 "url": "/file/url1",
@@ -85,21 +84,23 @@ IMPORT_BATCHES = [
     },
 ]
 
-API_BASEURL = 'http://127.0.0.1:8000/file_management'
+API_BASEURL = "http://127.0.0.1:8000/file_management"
 
 
 class TestFoo(TestCase):
     def test_serializer(self):
-        serializer = ItemBatchSerializer(data={
-            "items": [
-                {
-                    "type": "FOLDER",
-                    "id": "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",
-                    "parentId": None,
-                }
-            ],
-            "updateDate": "2022-02-01T12:00:00Z",
-        })
+        serializer = ItemBatchSerializer(
+            data={
+                "items": [
+                    {
+                        "type": "FOLDER",
+                        "id": "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",
+                        "parentId": None,
+                    }
+                ],
+                "updateDate": "2022-02-01T12:00:00Z",
+            }
+        )
 
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -110,24 +111,24 @@ class TestFoo(TestCase):
             "method": method,
             "headers": {},
         }
-        print('URL:', params['url'])
+        print("URL:", params["url"])
         if data:
             params["data"] = json.dumps(data, ensure_ascii=False).encode("utf-8")
             params["headers"]["Content-Length"] = len(params["data"])
             params["headers"]["Content-Type"] = "application/json"
 
         try:
-            print('Sending request')
-            print(f'PARAMS: {params}')
+            print("Sending request")
+            print(f"PARAMS: {params}")
             req = urllib.request.Request(**params)
             with urllib.request.urlopen(req) as res:
-                print('Decoding')
+                print("Decoding")
                 res_data = res.read().decode("utf-8")
                 if json_response:
                     res_data = json.loads(res_data)
                 return (res.getcode(), res_data)
         except urllib.error.HTTPError as e:
-            return (e.getcode(), f'{e.fp.read()} {params}')
+            return (e.getcode(), f"{e.fp.read()} {params}")
 
     """def test_serializer_parent(self):
         serializer = ParentSerializer(data={
@@ -154,11 +155,11 @@ class TestFoo(TestCase):
         print("Test import passed.")
 
 
-a = '''{"items":' \
+a = """{"items":' \
    [{},
    {"parentId":["Invalid pk \\"d515e43f-f3f6-4471-bb77-6b455017a2d2\\" - object does not exist."]},
    {"parentId":["Invalid pk \\"d515e43f-f3f6-4471-bb77-6b455017a2d2\\" - object does not exist."]}
    ]
    }' 
    {'url': 'http://127.0.0.1:8000/file_management/imports', 'method': 'POST', 'headers': {'Content-Length': 467, 'Content-Type': 'application/json'}, 'data': b'{"items": [{"type": "FOLDER", "id": "d515e43f-f3f6-4471-bb77-6b455017a2d2", "parentId": "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1"}, {"type": "FILE", "url": "/file/url1", "id": "863e1a7a-1304-42ae-943b-179184c077e3", "parentId": "d515e43f-f3f6-4471-bb77-6b455017a2d2", "size": 128}, {"type": "FILE", "url": "/file/url2", "id": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4", "parentId": "d515e43f-f3f6-4471-bb77-6b455017a2d2", "size": 256}], "updateDate": "2022-02-02T12:00:00Z"}'}
-'''
+"""
