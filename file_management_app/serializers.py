@@ -22,7 +22,7 @@ class ItemBatchSerializer(serializers.Serializer):
 
 class ParentSerializer(serializers.Serializer):
     items = ItemSerializer(many=True)
-    def update_or_create(self, parent_id, child_id=0):
+    def update_or_create(self, parent_id):
         defaults = {'type': 'FOLDER'}
         try:
             obj = Item.objects.get(id=parent_id)

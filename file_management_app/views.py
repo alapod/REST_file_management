@@ -20,11 +20,16 @@ class ImportsView(CreateAPIView):
     def create(self, request, *args, **kwargs):
         update_date = request.data['updateDate']
         for i in range(len(request.data["items"])):
-            new_data = {'updateDate': update_date, 'items': [request.data["items"][i]]}
+           # print(update_date)
+            new_data = {'items': [request.data["items"][i]]}
+            new_data['items'][-1]['update_date'] = update_date
+            #print('new_data = ', new_data)
             serializer = self.get_serializer(data=new_data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
+          #  print('serializer', serializer.data)
+        #print('SsSsssss', serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 
@@ -44,21 +49,3 @@ class UpdatesView(ListAPIView):
 class NodeHistoryView(ListAPIView):
     throttle_scope = 'info'
 
-# 1) Find the bad case
-# 2) Recursive CTE Postgresql (Trees)
-#    django execute raw query
-# 3)
-
-# result = {'children': []}
-# def rec_descendants(target_id, result: Dict)
-#     item = Item.objects.get(pk=target_id)
-#     result['parent_id'] = item.pk
-#     # ... todo add other fields
-#     relations_qs = Relations.objects.filter(parent=target_id)
-#     for it in relations_qs:
-#         child_result = {'children': []}
-#         rec_descendants(it.child_id, child_result)
-#         result['children'].append(child_result)
-#     return result
-#
-# return Response(self.form_output(instance), status=status.HTTP_200_OK)
