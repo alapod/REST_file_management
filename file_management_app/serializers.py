@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Item, Relations
-from collections import OrderedDict
+from .models import Item
+
 
 
 
@@ -22,7 +22,6 @@ class ItemBatchSerializer(serializers.Serializer):
 
 class ParentSerializer(serializers.Serializer):
     items = ItemSerializer(many=True)
-
     def update_or_create(self, parent_id, child_id=0):
         defaults = {'type': 'FOLDER'}
         try:
@@ -42,6 +41,7 @@ class ParentSerializer(serializers.Serializer):
     def create_relation(self, parent_id, child_id):
         relation = Relations(parent=parent_id, child=child_id)
         relation.save()
+
     def create(self, validated_data):
         items_data = validated_data.pop("items")
         items = []
@@ -49,6 +49,34 @@ class ParentSerializer(serializers.Serializer):
             if item['parentId']:
                 parent = self.update_or_create(item['parentId'])
                 self.create_relation(parent, item['id'])
-            items.append(Item.objects.create(**item))
+            ch = Item.objects.create(**item)
+           # if item['parentId']:
+            #    add_child(child=ch, parent=parent)
+            items.append(ch)
 
         return {'items': items}
+
+class NodeSerializer(serializers.Serializer):
+
+    def to_representation(self, instance):
+        children_inst = instance.get_children()
+        children = []
+        if children_inst:
+            children = [self.to_representation(child) for child in children_inst]
+
+        if not instance.parentId:
+            return {"children": children,
+                "date": instance.update_date,
+                "id": instance.id,
+                "parentId": None,
+                "size": instance.size,
+                "type": instance.type,
+                "url": instance.url}
+        else:
+            return {"children": children,
+                "date": instance.update_date,
+                "id": instance.id,
+                "parentId": instance.parentId.id,
+                "size": instance.size,
+                "type": instance.type,
+                "url": instance.url}

@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Item, Relations
+from .models import Item #, Relations
 
 
 admin.site.register(Item)
-admin.site.register(Relations)
+#admin.site.register(Relations)
