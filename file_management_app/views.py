@@ -38,21 +38,6 @@ class NodesView(RetrieveAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-#  print(f'INSTANCE {instance}')
-"""        children = instance.get_children()
-        for child in children:
-
-        print(
-            f'''"children": [{children}],
-            "date": {instance.update_date},
-            "id": {instance.id},
-            "parentId": {instance.parentId},
-            "size": {instance.size},
-            "type": {instance.type},
-            "url": {instance.url}
-
-        )"""
 class UpdatesView(ListAPIView):
     throttle_scope = 'info'
 

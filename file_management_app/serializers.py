@@ -60,10 +60,10 @@ class NodeSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         children_inst = instance.get_children()
+
         children = []
         if children_inst:
             children = [self.to_representation(child) for child in children_inst]
-
         if not instance.parentId:
             return {"children": children,
                 "date": instance.update_date,
@@ -72,6 +72,14 @@ class NodeSerializer(serializers.Serializer):
                 "size": instance.size,
                 "type": instance.type,
                 "url": instance.url}
+        elif instance.type == 'FILE':
+            return {"children": None,
+                    "date": instance.update_date,
+                    "id": instance.id,
+                    "parentId": instance.parentId.id,
+                    "size": instance.size,
+                    "type": instance.type,
+                    "url": instance.url}
         else:
             return {"children": children,
                 "date": instance.update_date,
