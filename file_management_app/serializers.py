@@ -14,7 +14,6 @@ class ItemBatchSerializer(serializers.Serializer):
     def create(self, validated_data):
         items_data = validated_data.pop("items")
         items = []
-
         for item in items_data:
             items.append(Item.objects.create(**item))
         return {"items": items}
@@ -27,38 +26,26 @@ class NodeSerializer(serializers.Serializer):
         size = sum(x.size for x in instance.get_descendants() if x.size)
         if instance.type == "FOLDER":
             instance.size = size
-            instance.update_date = max(
-                x.update_date for x in instance.get_descendants()
-            )
+            instance.update_date = max(x.update_date for x in instance.get_descendants())
         if children_inst:
             children = [self.to_representation(child) for child in children_inst]
+
+        result = {
+            "children": None,
+            "date": instance.update_date,
+            "id": instance.id,
+            "parentId": None,
+            "size": instance.size,
+            "type": instance.type,
+            "url": instance.url,
+        }
         if not instance.parentId:
-            return {
-                "children": children,
-                "date": instance.update_date,
-                "id": instance.id,
-                "parentId": None,
-                "size": instance.size,
-                "type": instance.type,
-                "url": instance.url,
-            }
+            result['children'] = children
+
         elif instance.type == "FILE":
-            return {
-                "children": None,
-                "date": instance.update_date,
-                "id": instance.id,
-                "parentId": instance.parentId.id,
-                "size": instance.size,
-                "type": instance.type,
-                "url": instance.url,
-            }
+            result['parentId'] = instance.parentId.id
+
         else:
-            return {
-                "children": children,
-                "date": instance.update_date,
-                "id": instance.id,
-                "parentId": instance.parentId.id,
-                "size": instance.size,
-                "type": instance.type,
-                "url": instance.url,
-            }
+            result['children'] = children
+            result['parentId'] = instance.parentId.id
+        return result
