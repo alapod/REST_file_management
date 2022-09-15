@@ -20,16 +20,12 @@ class ImportsView(CreateAPIView):
     def create(self, request, *args, **kwargs):
         update_date = request.data['updateDate']
         for i in range(len(request.data["items"])):
-           # print(update_date)
             new_data = {'items': [request.data["items"][i]]}
             new_data['items'][-1]['update_date'] = update_date
-            #print('new_data = ', new_data)
             serializer = self.get_serializer(data=new_data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
-          #  print('serializer', serializer.data)
-        #print('SsSsssss', serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 
