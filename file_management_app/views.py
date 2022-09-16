@@ -22,7 +22,13 @@ class DeleteView(DestroyAPIView):
 
 class ImportsView(CreateAPIView):
     serializer_class = ItemBatchSerializer
-
+    def update_ancestors(self, parentId, size, update_date):
+        parent = Item.objects.get(id=parentId)
+        ancestors = parent.get_ancestors(include_self=True)
+        for ancestor in ancestors:
+            ancestor.size += size
+            ancestor.update_date = update_date
+            ancestor.save()
     def create(self, request, *args, **kwargs):
         update_date = request.data["updateDate"]
         for i in range(len(request.data["items"])):

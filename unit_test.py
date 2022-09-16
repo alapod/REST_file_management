@@ -9,6 +9,9 @@ import urllib.parse
 import urllib.request
 
 API_BASEURL = "http://0.0.0.0:80/"
+API_BASEURL = "http://127.0.0.1:8000/"
+API_BASEURL = "https://reprint-1805.usr.yandex-academy.ru"
+
 
 ROOT_ID = "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1"
 
