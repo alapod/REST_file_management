@@ -1,6 +1,7 @@
 ## Cloud file management system 
 ### REST API service
-using Django REST framework
+using Django REST framework\
+MPTT for hierarchical data.
 
 Prerequisites:
 - Django~=4.0.3
@@ -10,7 +11,7 @@ Prerequisites:
 To start the server:
   python manage.py runserver
   
-MPTT for hierarchical data.
+
 
 
 
