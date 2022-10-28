@@ -3,7 +3,7 @@
 using Django REST framework\
 MPTT for hierarchical data.
 
-A cloud file management system. 
+This is a cloud file management system. 
 
 Prerequisites:
 - Django~=4.0.3
@@ -12,10 +12,32 @@ Prerequisites:
 
 ## To start the server:
     python manage.py runserver
+    
+## Run tests:
+...
+
+# REST API
+What you can do
+
+## Get info about files and folders
+    GET /nodes/id
+
+### Request
+
+### Response
   
+## Import file or folder data
+    POST /imports
+    
+### Request
 
+### Response
 
+## Delete file/folder data
+    DELETE /delete/id
 
+### Request
 
+### Response
 
 
