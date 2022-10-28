@@ -1,7 +1,5 @@
 ## Cloud file management system 
 ### REST API service
-using Django REST framework\
-MPTT for hierarchical data.
 
 This is a cloud file management system. 
 
