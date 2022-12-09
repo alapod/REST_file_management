@@ -6,7 +6,8 @@ This is a cloud file management system.
 
 TODO:
 - Idempotence
-- exceptions in middleware
+- Exceptions in middleware
+- Transactions atomicity
 
 Prerequisites:
 - Django~=4.0.3
