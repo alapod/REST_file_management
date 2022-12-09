@@ -4,6 +4,10 @@
 */in progress/*\
 This is a cloud file management system. 
 
+TODO:
+- Idempotence
+- exceptions in middleware
+
 Prerequisites:
 - Django~=4.0.3
 - djangorestframework~=3.13.1
