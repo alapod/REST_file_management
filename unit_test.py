@@ -8,7 +8,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-API_BASEURL = "http://127.0.0.1:8000/file_management/"
+API_BASEURL = "http://127.0.0.1:8000/"
 
 ROOT_ID = "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1"
 
@@ -182,7 +182,7 @@ def request(path, method="GET", data=None, json_response=False):
                 res_data = json.loads(res_data)
             return (res.getcode(), res_data)
     except urllib.error.HTTPError as e:
-        return (e.getcode(), f'{e.fp.read()} {params}')
+        return (e.getcode(), f"{e.fp.read()} {params}")
 
 
 def deep_sort_children(node):
@@ -211,7 +211,6 @@ def test_import():
     for index, batch in enumerate(IMPORT_BATCHES):
         print(f"Importing batch {index}")
         status, response = request("/imports", method="POST", data=batch)
-        print(response)
         assert status == 200, f"Expected HTTP status code 200, got {status}"
 
     print("Test import passed.")

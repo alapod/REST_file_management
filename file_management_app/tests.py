@@ -88,7 +88,7 @@ API_BASEURL = "http://127.0.0.1:8000/file_management"
 
 
 class TestFoo(TestCase):
-    def test_serializer(self):
+    """def test_serializer(self):
         serializer = ItemBatchSerializer(
             data={
                 "items": [
@@ -130,7 +130,7 @@ class TestFoo(TestCase):
         except urllib.error.HTTPError as e:
             return (e.getcode(), f"{e.fp.read()} {params}")
 
-    """def test_serializer_parent(self):
+    def test_serializer_parent(self):
         serializer = ParentSerializer(data={
                 "items": [
                     {

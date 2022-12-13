@@ -23,6 +23,15 @@ class DeleteView(DestroyAPIView):
 class ImportsView(CreateAPIView):
     serializer_class = ItemBatchSerializer
 
+    def update_ancestors(self, parentId, size, update_date):
+        parent = Item.objects.get(id=parentId)
+        ancestors = parent.get_ancestors(include_self=True)
+        for ancestor in ancestors:
+            ancestor.size += size
+            ancestor.update_date = update_date
+            ancestor.save()
+
+
     def create(self, request, *args, **kwargs):
         update_date = request.data["updateDate"]
         for i in range(len(request.data["items"])):
@@ -31,6 +40,8 @@ class ImportsView(CreateAPIView):
             serializer = self.get_serializer(data=new_data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
+            if request.data["items"][i]['type'] == 'FILE':
+                self.update_ancestors(request.data["items"][i]['parentId'], request.data["items"][i]['size'], update_date)
             headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
@@ -39,6 +50,7 @@ class NodesView(RetrieveAPIView):
     queryset = Item.objects.all()
     serializer_class = NodeSerializer
     throttle_scope = "info"
+    a = sorted([1, 2, 6, 3])
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -46,9 +58,14 @@ class NodesView(RetrieveAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class UpdatesView(ListAPIView):
+class UpdatesView(RetrieveAPIView):
     throttle_scope = "info"
+    queryset = Item.objects.all()
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class NodeHistoryView(ListAPIView):
     throttle_scope = "info"

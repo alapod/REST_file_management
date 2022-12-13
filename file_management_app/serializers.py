@@ -23,10 +23,7 @@ class NodeSerializer(serializers.Serializer):
     def to_representation(self, instance):
         children_inst = instance.get_children()
         children = []
-        size = sum(x.size for x in instance.get_descendants() if x.size)
-        if instance.type == "FOLDER":
-            instance.size = size
-            instance.update_date = max(x.update_date for x in instance.get_descendants())
+
         if children_inst:
             children = [self.to_representation(child) for child in children_inst]
 
