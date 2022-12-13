@@ -8,6 +8,7 @@ TODO:
 - Idempotence
 - Exceptions in middleware
 - Transactions atomicity
+- Tests
 
 Prerequisites:
 - Django~=4.0.3
