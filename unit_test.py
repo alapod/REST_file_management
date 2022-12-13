@@ -8,7 +8,11 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+
 API_BASEURL = "http://127.0.0.1:8000/"
+API_BASEURL = "http://0.0.0.0:80/"
+API_BASEURL = "http://127.0.0.1:8000/"
+
 
 ROOT_ID = "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1"
 
@@ -211,6 +215,7 @@ def test_import():
     for index, batch in enumerate(IMPORT_BATCHES):
         print(f"Importing batch {index}")
         status, response = request("/imports", method="POST", data=batch)
+       # print(response)
         assert status == 200, f"Expected HTTP status code 200, got {status}"
 
     print("Test import passed.")
@@ -251,7 +256,7 @@ def test_history():
 def test_delete():
     params = urllib.parse.urlencode({"date": "2022-02-04T00:00:00Z"})
     status, response = request(f"/delete/{ROOT_ID}?{params}", method="DELETE")
-    print(response)
+   # print(response)
     assert status == 200, f"Expected HTTP status code 200, got {status}"
 
     status, _ = request(f"/nodes/{ROOT_ID}", json_response=True)
@@ -263,8 +268,8 @@ def test_delete():
 def test_all():
     test_import()
     test_nodes()
-    # test_updates()
-    # test_history()
+   # test_updates()
+   # test_history()
     test_delete()
 
 

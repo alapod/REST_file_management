@@ -22,7 +22,6 @@ class DeleteView(DestroyAPIView):
 
 class ImportsView(CreateAPIView):
     serializer_class = ItemBatchSerializer
-
     def update_ancestors(self, parentId, size, update_date):
         parent = Item.objects.get(id=parentId)
         ancestors = parent.get_ancestors(include_self=True)

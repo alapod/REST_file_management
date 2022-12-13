@@ -23,7 +23,6 @@ class NodeSerializer(serializers.Serializer):
     def to_representation(self, instance):
         children_inst = instance.get_children()
         children = []
-
         if children_inst:
             children = [self.to_representation(child) for child in children_inst]
 
