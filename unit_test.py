@@ -10,7 +10,7 @@ import urllib.request
 
 
 API_BASEURL = "http://127.0.0.1:8000/"
-#API_BASEURL = "http://0.0.0.0:80/"
+# API_BASEURL = "http://0.0.0.0:80/"
 
 
 ROOT_ID = "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1"
@@ -49,12 +49,13 @@ IMPORT_PARTIALLY_REPEATING = [
             },
             {
                 "type": "FOLDER",
-                "id": "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",   # already exists
+                "id": "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",  # already exists
                 "parentId": None,
-            }
+            },
         ],
         "updateDate": "2022-02-02T12:00:00Z",
-    }]
+    },
+]
 
 IMPORT_SAME_TWICE = [
     {
@@ -67,7 +68,6 @@ IMPORT_SAME_TWICE = [
         ],
         "updateDate": "2022-02-01T12:00:00Z",
     },
-
     {
         "items": [
             {
@@ -300,6 +300,15 @@ def test_nodes():
     print("Test nodes passed.")
 
 
+def test_non_existent_nodes():
+    status, response = request(f"/nodes/0", json_response=True)
+    # print(json.dumps(response, indent=2, ensure_ascii=False))
+
+    assert status == 404, f"Expected HTTP status code 200, got {status}"
+
+    print("Test non-existent passed.")
+
+
 def test_updates():
     params = urllib.parse.urlencode({"date": "2022-02-04T00:00:00Z"})
     status, response = request(f"/updates?{params}", json_response=True)
@@ -319,7 +328,7 @@ def test_history():
 def test_delete():
     params = urllib.parse.urlencode({"date": "2022-02-04T00:00:00Z"})
     status, response = request(f"/delete/{ROOT_ID}?{params}", method="DELETE")
-   # print(response)
+    # print(response)
     assert status == 200, f"Expected HTTP status code 200, got {status}"
 
     status, _ = request(f"/nodes/{ROOT_ID}", json_response=True)
@@ -327,34 +336,36 @@ def test_delete():
 
     print("Test delete passed.")
 
+
 def test_delete_idempotence():
     params = urllib.parse.urlencode({"date": "2022-02-04T00:00:00Z"})
-    status, response = request(f"/delete/{ROOT_ID}?{params}", method="DELETE")
-    status, response = request(f"/delete/{ROOT_ID}?{params}", method="DELETE")
+    request(f"/delete/{ROOT_ID}?{params}", method="DELETE")
+    request(f"/delete/{ROOT_ID}?{params}", method="DELETE")
     status, _ = request(f"/nodes/{ROOT_ID}", json_response=True)
     assert status == 404, f"Expected HTTP status code 404, got {status}"
     print("Test delete idempotence passed.")
+
 
 def test_import_idempotence():
     for testcase in [IMPORT_SAME_TWICE, IMPORT_PARTIALLY_REPEATING]:
         for index, batch in enumerate(testcase):
             print(f"Importing copy {index}")
             status, response = request("/imports", method="POST", data=batch)
-           # print(response)
+            # print(response)
             assert status == 200, f"Expected HTTP status code 200, got {status}"
-
 
     print("Test import idempotence passed.")
 
 
 def test_all():
     test_import()
-  #  test_nodes()
-    #test_updates()
-   # test_history()
+    test_nodes()
+    # test_updates()
+    # test_history()
     test_delete()
     test_import_idempotence()
     test_delete_idempotence()
+    test_non_existent_nodes()
 
 
 def main():

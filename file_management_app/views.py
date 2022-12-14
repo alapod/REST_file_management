@@ -36,13 +36,13 @@ class ImportsView(CreateAPIView):
             ancestor.save()
 
     def skip_existing_nodes(self, data):
-        ids = [x['id'] for x in data["items"]]
+        ids = [x["id"] for x in data["items"]]
         repeating = []
         for item in ids:
             if Item.objects.filter(id=item).exists():
                 repeating.append(item)
-        new_data = [x for x in data['items'] if x['id'] not in repeating]
-        return {'items': new_data}
+        new_data = [x for x in data["items"] if x["id"] not in repeating]
+        return {"items": new_data}
 
     def create(self, request, *args, **kwargs):
         update_date = request.data["updateDate"]
@@ -56,8 +56,12 @@ class ImportsView(CreateAPIView):
             except ValidationError:
                 return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
             self.perform_create(serializer)
-            if request.data["items"][i]['type'] == 'FILE':
-                self.update_ancestors(request.data["items"][i]['parentId'], request.data["items"][i]['size'], update_date)
+            if request.data["items"][i]["type"] == "FILE":
+                self.update_ancestors(
+                    request.data["items"][i]["parentId"],
+                    request.data["items"][i]["size"],
+                    update_date,
+                )
             headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
@@ -82,6 +86,7 @@ class UpdatesView(RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class NodeHistoryView(ListAPIView):
     throttle_scope = "info"

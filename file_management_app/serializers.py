@@ -36,12 +36,12 @@ class NodeSerializer(serializers.Serializer):
             "url": instance.url,
         }
         if not instance.parentId:
-            result['children'] = children
+            result["children"] = children
 
         elif instance.type == "FILE":
-            result['parentId'] = instance.parentId.id
+            result["parentId"] = instance.parentId.id
 
         else:
-            result['children'] = children
-            result['parentId'] = instance.parentId.id
+            result["children"] = children
+            result["parentId"] = instance.parentId.id
         return result
