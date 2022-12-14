@@ -16,6 +16,30 @@ API_BASEURL = "http://127.0.0.1:8000/"
 
 ROOT_ID = "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1"
 
+IMPORT_REPEATED = [
+    {
+        "items": [
+            {
+                "type": "FOLDER",
+                "id": "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",
+                "parentId": None,
+            }
+        ],
+        "updateDate": "2022-02-01T12:00:00Z",
+    },
+
+    {
+        "items": [
+            {
+                "type": "FOLDER",
+                "id": "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",
+                "parentId": None,
+            }
+        ],
+        "updateDate": "2022-02-01T12:00:00Z",
+    },
+]
+
 IMPORT_BATCHES = [
     {
         "items": [
@@ -215,7 +239,6 @@ def test_import():
     for index, batch in enumerate(IMPORT_BATCHES):
         print(f"Importing batch {index}")
         status, response = request("/imports", method="POST", data=batch)
-       # print(response)
         assert status == 200, f"Expected HTTP status code 200, got {status}"
 
     print("Test import passed.")
@@ -264,13 +287,26 @@ def test_delete():
 
     print("Test delete passed.")
 
+def test_delete_idempotence():
+    ...
+
+def test_import_idempotence():
+    for index, batch in enumerate(IMPORT_REPEATED):
+        print(f"Importing copy {index}")
+        status, response = request("/imports", method="POST", data=batch)
+       # print(response)
+        assert status == 200, f"Expected HTTP status code 200, got {status}"
+
+    print("Test import idempotence passed.")
+
 
 def test_all():
-    test_import()
-    test_nodes()
+   # test_import()
+   # test_nodes()
    # test_updates()
    # test_history()
-    test_delete()
+   # test_delete()
+    test_import_idempotence()
 
 
 def main():

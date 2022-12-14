@@ -11,7 +11,6 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 
 
-
 class DeleteView(DestroyAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
@@ -33,12 +32,21 @@ class ImportsView(CreateAPIView):
             ancestor.update_date = update_date
             ancestor.save()
 
+    def skip_existing_nodes(self, data):
+        ids = [x['id'] for x in data["items"]]
+        repeating = []
+        for item in ids:
+            if Item.objects.filter(id=item).exists():
+                repeating.append(item)
+        new_data = [x for x in data['items'] if x['id'] not in repeating]
+        return {'items': new_data}
+
     def create(self, request, *args, **kwargs):
         update_date = request.data["updateDate"]
         for i in range(len(request.data["items"])):
             new_data = {"items": [request.data["items"][i]]}
             new_data["items"][-1]["update_date"] = update_date
-            ids = [x['id'] for x in new_data["items"]]
+            new_data = self.skip_existing_nodes(new_data)
             serializer = self.get_serializer(data=new_data)
             try:
                 serializer.is_valid(raise_exception=True)
