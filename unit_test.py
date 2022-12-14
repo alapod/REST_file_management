@@ -10,13 +10,53 @@ import urllib.request
 
 
 API_BASEURL = "http://127.0.0.1:8000/"
-API_BASEURL = "http://0.0.0.0:80/"
-API_BASEURL = "http://127.0.0.1:8000/"
+#API_BASEURL = "http://0.0.0.0:80/"
 
 
 ROOT_ID = "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1"
 
-IMPORT_REPEATED = [
+IMPORT_PARTIALLY_REPEATING = [
+    {
+        "items": [
+            {
+                "type": "FOLDER",
+                "id": "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",
+                "parentId": None,
+            }
+        ],
+        "updateDate": "2022-02-01T12:00:00Z",
+    },
+    {
+        "items": [
+            {
+                "type": "FOLDER",
+                "id": "d515e43f-f3f6-4471-bb77-6b455017a2d2",
+                "parentId": "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",
+            },
+            {
+                "type": "FILE",
+                "url": "/file/url1",
+                "id": "863e1a7a-1304-42ae-943b-179184c077e3",
+                "parentId": "d515e43f-f3f6-4471-bb77-6b455017a2d2",
+                "size": 128,
+            },
+            {
+                "type": "FILE",
+                "url": "/file/url2",
+                "id": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4",
+                "parentId": "d515e43f-f3f6-4471-bb77-6b455017a2d2",
+                "size": 256,
+            },
+            {
+                "type": "FOLDER",
+                "id": "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",   # already exists
+                "parentId": None,
+            }
+        ],
+        "updateDate": "2022-02-02T12:00:00Z",
+    }]
+
+IMPORT_SAME_TWICE = [
     {
         "items": [
             {
@@ -288,25 +328,33 @@ def test_delete():
     print("Test delete passed.")
 
 def test_delete_idempotence():
-    ...
+    params = urllib.parse.urlencode({"date": "2022-02-04T00:00:00Z"})
+    status, response = request(f"/delete/{ROOT_ID}?{params}", method="DELETE")
+    status, response = request(f"/delete/{ROOT_ID}?{params}", method="DELETE")
+    status, _ = request(f"/nodes/{ROOT_ID}", json_response=True)
+    assert status == 404, f"Expected HTTP status code 404, got {status}"
+    print("Test delete idempotence passed.")
 
 def test_import_idempotence():
-    for index, batch in enumerate(IMPORT_REPEATED):
-        print(f"Importing copy {index}")
-        status, response = request("/imports", method="POST", data=batch)
-       # print(response)
-        assert status == 200, f"Expected HTTP status code 200, got {status}"
+    for testcase in [IMPORT_SAME_TWICE, IMPORT_PARTIALLY_REPEATING]:
+        for index, batch in enumerate(testcase):
+            print(f"Importing copy {index}")
+            status, response = request("/imports", method="POST", data=batch)
+           # print(response)
+            assert status == 200, f"Expected HTTP status code 200, got {status}"
+
 
     print("Test import idempotence passed.")
 
 
 def test_all():
-   # test_import()
-   # test_nodes()
-   # test_updates()
+    test_import()
+  #  test_nodes()
+    #test_updates()
    # test_history()
-   # test_delete()
+    test_delete()
     test_import_idempotence()
+    test_delete_idempotence()
 
 
 def main():
