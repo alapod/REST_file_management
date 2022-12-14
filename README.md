@@ -5,7 +5,7 @@
 This is a cloud file management system. 
 
 TODO:
-- Idempotence
+- ~Idempotence~
 - Exceptions in middleware
 - Transactions atomicity
 - Tests
