@@ -8,6 +8,8 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
+
 
 
 class DeleteView(DestroyAPIView):
@@ -22,6 +24,7 @@ class DeleteView(DestroyAPIView):
 
 class ImportsView(CreateAPIView):
     serializer_class = ItemBatchSerializer
+
     def update_ancestors(self, parentId, size, update_date):
         parent = Item.objects.get(id=parentId)
         ancestors = parent.get_ancestors(include_self=True)
@@ -30,14 +33,17 @@ class ImportsView(CreateAPIView):
             ancestor.update_date = update_date
             ancestor.save()
 
-
     def create(self, request, *args, **kwargs):
         update_date = request.data["updateDate"]
         for i in range(len(request.data["items"])):
             new_data = {"items": [request.data["items"][i]]}
             new_data["items"][-1]["update_date"] = update_date
+            ids = [x['id'] for x in new_data["items"]]
             serializer = self.get_serializer(data=new_data)
-            serializer.is_valid(raise_exception=True)
+            try:
+                serializer.is_valid(raise_exception=True)
+            except ValidationError:
+                return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
             self.perform_create(serializer)
             if request.data["items"][i]['type'] == 'FILE':
                 self.update_ancestors(request.data["items"][i]['parentId'], request.data["items"][i]['size'], update_date)
