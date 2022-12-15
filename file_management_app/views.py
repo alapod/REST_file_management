@@ -19,9 +19,10 @@ class DeleteView(DestroyAPIView):
         try:
             instance = self.get_object()
             self.perform_destroy(instance)
+            return Response(status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_200_OK)
+
 
 
 class ImportsView(CreateAPIView):
@@ -73,9 +74,13 @@ class NodesView(RetrieveAPIView):
     a = sorted([1, 2, 6, 3])
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 
 class UpdatesView(RetrieveAPIView):
@@ -83,9 +88,13 @@ class UpdatesView(RetrieveAPIView):
     queryset = Item.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 
 class NodeHistoryView(ListAPIView):
