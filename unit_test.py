@@ -304,7 +304,7 @@ def test_non_existent_nodes():
     status, response = request(f"/nodes/0", json_response=True)
     # print(json.dumps(response, indent=2, ensure_ascii=False))
 
-    assert status == 404, f"Expected HTTP status code 200, got {status}"
+    assert status == 404, f"Expected HTTP status code 404, got {status}"
 
     print("Test non-existent passed.")
 

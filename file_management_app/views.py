@@ -18,9 +18,9 @@ class DeleteView(DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
+            self.perform_destroy(instance)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        self.perform_destroy(instance)
         return Response(status=status.HTTP_200_OK)
 
 
@@ -53,9 +53,9 @@ class ImportsView(CreateAPIView):
             serializer = self.get_serializer(data=new_data)
             try:
                 serializer.is_valid(raise_exception=True)
+                self.perform_create(serializer)
             except ValidationError:
                 return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-            self.perform_create(serializer)
             if request.data["items"][i]["type"] == "FILE":
                 self.update_ancestors(
                     request.data["items"][i]["parentId"],
