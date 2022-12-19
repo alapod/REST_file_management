@@ -32,9 +32,12 @@ class ImportsView(CreateAPIView):
         parent = Item.objects.get(id=parentId)
         ancestors = parent.get_ancestors(include_self=True)
         for ancestor in ancestors:
-            ancestor.size += size
-            ancestor.update_date = update_date
-            ancestor.save()
+            try:
+                ancestor.size += size
+                ancestor.update_date = update_date
+                ancestor.save()
+            except:
+                continue        #add logging
 
     def skip_existing_nodes(self, data):
         ids = [x["id"] for x in data["items"]]
