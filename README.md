@@ -18,6 +18,8 @@ Prerequisites:
 ## To start the server:
     python manage.py runserver
    
+## To run tests:
+     python unit_test.py
 
 # REST API
 What you can do
