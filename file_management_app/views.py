@@ -74,7 +74,7 @@ class NodesView(RetrieveAPIView):
     queryset = Item.objects.all()
     serializer_class = NodeSerializer
     throttle_scope = "info"
-    a = sorted([1, 2, 6, 3])
+
 
     def retrieve(self, request, *args, **kwargs):
         try:
