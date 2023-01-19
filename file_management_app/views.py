@@ -50,8 +50,8 @@ class ImportsView(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         update_date = request.data["updateDate"]
-        for i in range(len(request.data["items"])):
-            new_data = {"items": [request.data["items"][i]]}
+        for i, item in enumerate(request.data["items"]):
+            new_data = {"items": [item]}
             new_data["items"][-1]["update_date"] = update_date
             new_data = self.skip_existing_nodes(new_data)
             serializer = self.get_serializer(data=new_data)
@@ -60,10 +60,10 @@ class ImportsView(CreateAPIView):
                 self.perform_create(serializer)
             except ValidationError:
                 return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-            if request.data["items"][i]["type"] == "FILE":
+            if item["type"] == "FILE":
                 self.update_ancestors(
-                    request.data["items"][i]["parentId"],
-                    request.data["items"][i]["size"],
+                    item["parentId"],
+                    item["size"],
                     update_date,
                 )
             headers = self.get_success_headers(serializer.data)
