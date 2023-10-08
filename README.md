@@ -3,12 +3,6 @@
 
 This is a cloud file management system. 
 
-TODO:
-- ~Idempotence~
-- Exceptions in middleware
-- Transactions atomicity
-- Tests
-
 Prerequisites:
 - Django~=4.0.3
 - djangorestframework~=3.13.1
@@ -32,4 +26,9 @@ What you can do
 ## Delete file/folder data
     DELETE /delete/id
 
+TODO:
+- ~Idempotence~
+- Exceptions in middleware
+- Transactions atomicity
+- Tests
 
