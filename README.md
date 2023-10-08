@@ -18,13 +18,13 @@ Prerequisites:
 What you can do
 
 ## Get info about files and folders
-    GET /nodes/id
+    GET /nodes/{id}
   
 ## Import file or folder data
     POST /imports
 
 ## Delete file/folder data
-    DELETE /delete/id
+    DELETE /delete/{id}
 
 TODO:
 - ~Idempotence~
