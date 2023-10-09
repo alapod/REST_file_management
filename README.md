@@ -28,7 +28,8 @@ What you can do
 
 TODO:
 - ~Idempotence~
+- Tests
 - Exceptions in middleware
 - Transactions atomicity
-- Tests
+
 
